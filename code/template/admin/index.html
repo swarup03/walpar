@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="description" content="Ekka - Admin Dashboard eCommerce HTML Template.">
+
+	<title>Admin - Walpar Nutritions Limited</title>
+
+	<!-- GOOGLE FONTS -->
+	<link rel="preconnect" href="https://fonts.googleapis.com/">
+	<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600;700;800&amp;family=Poppins:wght@300;400;500;600;700;800;900&amp;family=Roboto:wght@400;500;700;900&amp;display=swap" rel="stylesheet"> 
+
+	<link href="/static/cdn.jsdelivr.net/npm/%40mdi/font%404.4.95/css/materialdesignicons.min.css" rel="stylesheet" />
+
+	<!-- PLUGINS CSS STYLE -->
+	<link href="/static/assets/plugins/daterangepicker/daterangepicker.css" rel="stylesheet">
+	<link href="/static/assets/plugins/simplebar/simplebar.css" rel="stylesheet" />
+
+	<!-- Ekka CSS -->
+	<link id="ekka-css" href="/static/assets/css/ekka.css" rel="stylesheet" />
+
+	<!-- FAVICON -->
+	<link href="/static/assets/img/favicon.png" rel="shortcut icon" />
+
+</head>
+
+<body class="ec-header-fixed ec-sidebar-fixed ec-sidebar-light ec-header-light" id="body">
+
+	<!--  WRAPPER  -->
+	{% include "admin/nav.html" %}
+			<!-- CONTENT WRAPPER -->
+			<div class="ec-content-wrapper">
+				<div class="content">
+					<div class="row">
+						<div class="col-xl-3 col-sm-6 p-b-15 lbl-card">
+							<div class="card card-mini dash-card card-1">
+								<div class="card-body">
+									<h2 class="mb-1">{{ new_orders }}</h2>
+									<p>New Orders</p>
+									<span class="mdi mdi-account-arrow-left"></span>
+								</div>
+							</div>
+						</div>
+						<div class="col-xl-3 col-sm-6 p-b-15 lbl-card">
+							<div class="card card-mini dash-card card-2">
+								<div class="card-body">
+									<h2 class="mb-1">{{ panding_order }}</h2>
+									<p>Pending Orders</p>
+									<span class="mdi mdi-account-clock"></span>
+								</div>
+							</div>
+						</div>
+						<div class="col-xl-3 col-sm-6 p-b-15 lbl-card">
+							<div class="card card-mini dash-card card-3">
+								<div class="card-body">
+									<h2 class="mb-1">{{ order_shipped }}</h2>
+									<p>Shipped Orders</p>
+									<span class="mdi mdi-package-variant"></span>
+								</div>
+							</div>
+						</div>
+						<div class="col-xl-3 col-sm-6 p-b-15 lbl-card">
+							<div class="card card-mini dash-card card-4">
+								<div class="card-body">
+									<h2 class="mb-1">₹{{panding_amount}}</h2>
+									<p>Pending Amount</p>
+									<span class="mdi mdi-currency-inr"></span>
+									
+								</div>
+							</div>
+						</div>
+					</div>
+
+					
+					<div class="row">
+						<div class="col-12 p-b-15">
+							<!-- Recent Order Table -->
+							<div class="card card-table-border-none card-default recent-orders" id="recent-orders">
+								<div class="card-header justify-content-between">
+									<h2>Recent Orders</h2>
+									
+								</div>
+								<div class="card-body pt-0 pb-5">
+									<table class="table card-table table-responsive table-responsive-large"
+										style="width:100%">
+										<thead>
+											<tr>
+												<th>Order ID</th>
+												<th>User Email</th>
+												<th class="d-none d-lg-table-cell">Units</th>
+												<th class="d-none d-lg-table-cell">Order Date</th>
+												<th class="d-none d-lg-table-cell">Order Cost</th>
+												<th>Status</th>
+												<th></th>
+											</tr>
+										</thead>
+										<tbody>
+											{% for order_id, order_date, amount, status, user_id ,email, quantity in recent_order %}
+											<tr>
+												<td><a class="text-dark" href="#">{{ order_id }}</a></td>
+												<td>
+													<a class="text-dark" href="/admin/user/{{user_id}}"> {{ email }}</a>
+												</td>
+												<td class="d-none d-lg-table-cell">{{ quantity }}</td>
+												<td class="d-none d-lg-table-cell">{{order_date.strftime('%d-%m-%Y')}}</td>
+												<td class="d-none d-lg-table-cell">₹{{amount}} /-</td>
+												{% if status=="completed" %}
+												<td>
+													<span class="badge badge-success">DELIVERED</span>
+												</td>
+												{% elif status=="shipped" %}
+												<td>
+													<span class="badge badge-warning">{{ status }}</span>
+												</td>
+												{% elif status=="pending" %}
+												<td>
+													<span class="badge badge-secondary">{{ status }}</span>
+												</td>
+												{% elif status=="cancel" %}
+												<td>
+													<span class="badge badge-danger">Order Canceled</span>
+												</td>
+												{% endif %}
+												<td class="text-right">
+													<div class="dropdown show d-inline-block widget-dropdown">
+														
+														<a href="/admin/order/{{order_id}}">View</a>
+														
+													</div>
+												</td>
+											</tr>
+											{% endfor %}
+											
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-xl-5">
+							<!-- New Customers -->
+							<div class="card ec-cust-card card-table-border-none card-default">
+								<div class="card-header justify-content-between ">
+									<h2>New Customers</h2>
+									
+								</div>
+								<div class="card-body pt-0 pb-15px">
+									<table class="table ">
+										<tbody>
+											{% for user_id,first_name, last_name, email, sex in new_user %}
+											<tr>
+												<td>
+													<div class="media">
+														<div class="media-image mr-3 rounded-circle">
+															<a href="/admin/user/{{user_id}}">
+																<img
+																	class="profile-img rounded-circle w-45"
+																	src="/static/assets/img/user/{{sex}}.jpg"
+																	alt="customer image"></a>
+														</div>
+														<div class="media-body align-self-center">
+															<a href="/admin/user/{{user_id}}">
+																<h6 class="mt-0 text-dark font-weight-medium">{{first_name}} {{last_name}}</h6>
+															</a>
+														</div>
+													</div>
+												</td>
+												<td>{{email}}</td>
+											</tr>
+											{% endfor %}
+											
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-xl-7">
+							<!-- Top Products -->
+							<div class="card card-default ec-card-top-prod">
+								<div class="card-header justify-content-between">
+									<h2>Top Products</h2>
+									<div>
+										
+										
+									</div>
+								</div>
+								<div class="row card-body mt-10px mb-10px py-0">
+									
+
+									{%  for name, price, product_id,description, brandId,fileNames in best_product %}
+									{% if fileNames is defined and fileNames|length >= 2 %}
+										{% set path1 = 'brand/' + brandId|string + '/' + fileNames[0] %}
+										{% set path2 = 'brand/' + brandId|string + '/' + fileNames[1] %}
+									{% endif %}
+									<div class="col-6 media d-flex pt-15px pb-15px">
+										<div
+											class="col-lg-3 col-md-3 col-2 media-image align-self-center rounded">
+											<a href="/admin/product/{{product_id}}"><img src="{{ url_for('static', filename=path1) }}" height="200"  width="80" alt="customer image"></a>
+										</div>
+										<div class="col-lg-9 col-md-9 col-10 media-body align-self-center ec-pos">
+											<a href="/admin/product/{{product_id}}">
+												<h6 class="mb-10px text-dark font-weight-medium">{{ name }}</h6>
+												<p>{{description}}</p>
+											</a>
+											<!--  <p class="float-md-right sale"><span class="mr-2">58</span>Sales</p> -->
+											<p class="mb-0 ec-price">
+												<span class="text-dark">₹{{price}}</span>
+												<del>₹{{price}}</del>
+											</p>
+										</div>
+									</div>
+									{% endfor %}
+									
+								</div>
+							</div>
+						</div>
+					</div>
+				</div> <!-- End Content -->
+			</div> <!-- End Content Wrapper -->
+
+			{% include "admin/footer.html" %}
+
+		</div> <!-- End Page Wrapper -->
+	</div> <!-- End Wrapper -->
+
+	<!-- Common Javascript -->
+	<script src="/static/assets/plugins/jquery/jquery-3.5.1.min.js"></script>
+	<script src="/static/assets/js/bootstrap.bundle.min.js"></script>
+	<script src="/static/assets/plugins/simplebar/simplebar.min.js"></script>
+	<script src="/static/assets/plugins/jquery-zoom/jquery.zoom.min.js"></script>
+	<script src="/static/assets/plugins/slick/slick.min.js"></script>
+
+	<!-- Chart -->
+	<script src="/static/assets/plugins/charts/Chart.min.js"></script>
+	<script src="/static/assets/js/chart.js"></script>
+
+	<!-- Google map chart -->
+	<script src="/static/assets/plugins/charts/google-map-loader.js"></script>
+	<script src="/static/assets/plugins/charts/google-map.js"></script>
+
+	<!-- Date Range Picker -->
+	<script src="/static/assets/plugins/daterangepicker/moment.min.js"></script>
+    <script src="/static/assets/plugins/daterangepicker/daterangepicker.js"></script>
+	<script src="/static/assets/js/date-range.js"></script>
+
+	<!-- Option Switcher -->
+	<script src="/static/assets/plugins/options-sidebar/optionswitcher.js"></script>
+
+	<!-- Ekka Custom -->
+	<script src="/static/assets/js/ekka.js"></script>
+</body>
+
+
+</html>
