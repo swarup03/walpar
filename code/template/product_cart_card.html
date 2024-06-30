@@ -1,0 +1,26 @@
+{% if fileNames is defined and fileNames|length >= 2 %}
+{% set path1 = 'brand/' + brand_id|string + '/' + fileNames[0] %}
+{% set path2 = 'brand/' + brand_id|string + '/' + fileNames[1] %}
+{% endif %}
+<style>
+  .box_img_cart{
+    height: 130px;
+    width: 110.44px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+  }
+</style>
+<div class="card mb-3 p-1 product-card" style="max-width: 540px;">
+    <div class="row g-0">
+        <div style="background-image: url({{ url_for('static', filename=path1) }});" class="img-fluid rounded-start box_img_cart col-md-4">
+        </div>
+        <div class="col-md-8">
+            <div class="card-body">
+                <h5 class="card-title">{{ name }}</h5>
+                MRP: <h5 id="price_{{ product_id }}" style="display: inline;" class="card-title price">₹{{ price * quantity }}/-</h5>
+                <p>Quantity: <span class="quantity">{{ quantity }}</span></p>
+            </div>
+        </div>
+    </div>
+</div>

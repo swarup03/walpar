@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"  />
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.png') }}">
+    <title>Walpar Nutritions</title>
+</head>
+
+
+<body>
+{% include 'nav.html' %}
+<style>
+    .product_img{
+        height: 620px;
+        width: 626.44px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center ;
+    }
+
+      .product_img:hover {
+        border-radius: 25px;
+        transition: background-image 0.5s, border-radius 0.5s;
+      }
+</style>
+
+<div class="row">
+  <div class="col-6">
+
+      <div id="carouselExample" class="carousel slide">
+          <div class="carousel-inner m-5">
+                {% for name in file_names %}
+                    {% set image_path = 'brand/' + brandId|string + '/' + name %}
+                    <div class="carousel-item {% if loop.first %}active{% endif %}">
+                        <div style="background-image: url({{ url_for('static', filename=image_path) }});" class="d-block w-100 product_img"></div>
+                    </div>
+                {% endfor %}
+            </div>
+
+          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+        </div>
+
+  </div>
+  <div class="col-6" >
+      <div class="p-5"style="margin-top: 120px;">
+    <h2 class="card-title">{{product_detail[0][0]}}</h2>
+        <p style="display: inline;"> MRP: <h4 style="display: inline;" class="card-title">₹{{product_detail[0][2]}}/-</h4><del style="display: inline;">₹1000/-</del><span class=" mx-3 py-2 badge bg-info text-dark">Sale</span></p>
+        <p class="card-text">{{product_detail[0][1]}}</p>
+          <p class="card-text">(inc of all taxes)</p>
+          <button type="button" class="btn btn-primary btn-lg" onclick="addToCart({{productId}})">ADD TO CART</button>
+          <button type="button" class="btn btn-outline-danger btn-lg fa-regular fa-heart rounded-circle p-3 mx-4" onclick="likeProduct({{ productId }})"></button>
+     <div class="quantity-container my-4">
+    <button onclick="decreaseQuantity()" class="btn btn-primary">-</button>
+    <input type="text" id="quantityInput" value="1" class="btn btn-outline-primary" readonly>
+    <button onclick="increaseQuantity()" class="btn btn-primary">+</button>
+    </div>
+
+<script>
+function increaseQuantity() {
+    var quantityInput = document.getElementById("quantityInput");
+    var currentQuantity = parseInt(quantityInput.value);
+    quantityInput.value = currentQuantity + 1;
+}
+
+function decreaseQuantity() {
+    var quantityInput = document.getElementById("quantityInput");
+    var currentQuantity = parseInt(quantityInput.value);
+    if (currentQuantity > 1) {
+        quantityInput.value = currentQuantity - 1;
+    }
+}
+
+</script>
+
+<div class="accordion accordion-flush my-3" id="accordionFlushExample">
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+        Manufacturer Information
+      </button>
+    </h2>
+    <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">First</th>
+                      <th scope="col">Last</th>
+                      <th scope="col">Handle</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th scope="row">1</th>
+                      <td>Mark</td>
+                      <td>Otto</td>
+                      <td>@mdo</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">2</th>
+                      <td>Jacob</td>
+                      <td>Thornton</td>
+                      <td>@fat</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">3</th>
+                      <td colspan="2">Larry the Bird</td>
+                      <td>@twitter</td>
+                    </tr>
+                  </tbody>
+            </table>
+      </div>
+    </div>
+  </div>
+    <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+        Product Details
+      </button>
+    </h2>
+    <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Dui accumsan sit amet nulla facilisi morbi. At risus viverra adipiscing at in tellus. Diam sollicitudin tempor id eu nisl. Arcu vitae elementum curabitur vitae nunc. Cras ornare arcu dui vivamus arcu felis bibendum ut tristique. Porta nibh venenatis cras sed felis eget velit aliquet sagittis. Vitae aliquet nec ullamcorper sit amet risus. Sed vulputate mi sit amet. Scelerisque purus semper eget duis. Scelerisque eleifend donec pretium vulputate sapien nec sagittis. Urna porttitor rhoncus dolor purus non enim praesent. Vitae justo eget magna fermentum. Non odio euismod lacinia at quis risus. Dignissim enim sit amet venenatis urna. Mauris rhoncus aenean vel elit scelerisque mauris pellentesque. Tristique senectus et netus et. Tristique et egestas quis ipsum suspendisse ultrices gravida. Orci ac auctor augue mauris. Nibh ipsum consequat nisl vel pretium lectus quam.
+
+Quisque id diam vel quam elementum pulvinar etiam. Diam phasellus vestibulum lorem sed risus. Risus feugiat in ante metus dictum at tempor commodo. Vel elit scelerisque mauris pellentesque pulvinar pellentesque habitant morbi tristique. Sed euismod nisi porta lorem mollis. Mattis pellentesque id nibh tortor id aliquet lectus proin. Semper risus in hendrerit gravida rutrum. Auctor urna nunc id cursus. Ornare suspendisse sed nisi lacus sed. Ac turpis egestas integer eget. Sit amet mattis vulputate enim nulla aliquet porttitor lacus luctus. In metus vulputate eu scelerisque felis imperdiet proin fermentum leo. Amet mattis vulputate enim nulla aliquet porttitor lacus luctus accumsan. Turpis cursus in hac habitasse platea dictumst quisque sagittis.
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+      </div>
+  </div>
+<h1 class="text-center mt-2 mb-3">
+    FAQs
+</h1>
+<div class="container">
+    <div class="accordion" id="accordionPanelsStayOpenExample">
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+        Accordion Item #1
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
+      <div class="accordion-body">
+        <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+<h1 class="text-center mt-5 mb-3">
+    You may also like
+</h1>
+<div class="container">
+<div class="container">
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for name, price, productId, brandId, fileNames in brand_product %}
+            {% include 'card.html' %}
+        {% endfor %}
+    </div>
+</div>
+</div>
+
+{% include 'footer.html' %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script></script>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+</div>
+
+<script>
+    // Your existing code here...
+
+    function likeProduct(clickedProductId) {
+        // Check if user is authenticated
+        const isAuthenticated = {{ session.get('Walpar-Nutritions_email_session') and 'true' or 'false' }};
+
+        if (isAuthenticated) {
+            // Fetch the user's email from the session
+            const userEmail = '{{ session.get('Walpar-Nutritions_email_session') }}';
+            console.log('User Email:', userEmail);
+
+
+            // Send request to server
+            fetch('/like_product', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    productId: clickedProductId,
+                    User_Email: userEmail,
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Handle the response
+                if (data.status === 'success') {
+                    // Product successfully added to cart, show a success toast
+                    showSuccessToast('Product liked!');
+                } else if (data.error === 'product already liked') {
+                    // Product is already in the cart, show a warning toast
+                    showWarningToast('Product is already liked.');
+                }
+            })
+            .catch(error => {
+                console.error('Error adding to cart:', error);
+                // Show an error toast
+                showErrorToast('An error occurred while licking the product.');
+            });
+        } else {
+            // Redirect to the login page
+            window.location.href = '/profile/login';
+        }
+    }
+
+    function addToCart(clickedProductId) {
+        // Check if user is authenticated
+        const isAuthenticated = {{ session.get('Walpar-Nutritions_email_session') and 'true' or 'false' }};
+
+        if (isAuthenticated) {
+            // Fetch the user's email from the session
+            const userEmail = '{{ session.get('Walpar-Nutritions_email_session') }}';
+            console.log('User Email:', userEmail);
+
+            // Gather product details
+            const quantityInput = document.getElementById('quantityInput');
+            const quantity = parseInt(quantityInput.value);
+
+            // Send request to server
+            fetch('/add_to_cart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    productId: clickedProductId,
+                    quantity: quantity,
+                    User_Email: userEmail,
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Handle the response
+                if (data.status === 'success') {
+                    // Product successfully added to cart, show a success toast
+                    showSuccessToast('Product added to cart successfully!');
+                } else if (data.error === 'product already in the cart') {
+                    // Product is already in the cart, show a warning toast
+                    showWarningToast('Product is already in the cart.');
+                }
+            })
+            .catch(error => {
+                console.error('Error adding to cart:', error);
+                // Show an error toast
+                showErrorToast('An error occurred while adding the product to the cart.');
+            });
+        } else {
+            // Redirect to the login page
+            window.location.href = '/profile/login';
+        }
+    }
+     // Function to show a success toast
+        function showSuccessToast(message) {
+            showToast('bg-success', message);
+        }
+
+        // Function to show a warning toast
+        function showWarningToast(message) {
+            showToast('bg-warning', message);
+        }
+
+        // Function to show an error toast
+        function showErrorToast(message) {
+            showToast('bg-danger', message);
+        }
+
+        // Generic function to show a toast
+        function showToast(bgClass, message) {
+            const toastContainer = document.querySelector('.toast-container');
+            const liveToast = document.getElementById('liveToast');
+
+            // Create a new toast element
+            const newToast = document.createElement('div');
+            newToast.className = `toast ${bgClass}`;
+            newToast.setAttribute('role', 'alert');
+            newToast.setAttribute('aria-live', 'assertive');
+            newToast.setAttribute('aria-atomic', 'true');
+
+            // Set the toast content
+            newToast.innerHTML = `
+                <div class="toast-header">
+                    <strong class="me-auto">For "{{product_detail[0][0]}}"</strong>
+                    <small>Just now</small>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    ${message}
+                </div>
+            `;
+
+            // Add the new toast to the container
+            toastContainer.appendChild(newToast);
+
+            // Show the toast
+            const bootstrapToast = new bootstrap.Toast(newToast);
+            bootstrapToast.show();
+
+            // Remove the toast after it's hidden
+            newToast.addEventListener('hidden.bs.toast', function () {
+                toastContainer.removeChild(newToast);
+            });
+        }
+
+</script>
+
+</body>
+
+</html>

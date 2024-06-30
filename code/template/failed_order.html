@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.png') }}">
+
+    <title>Walpar Nutritions</title>
+
+</head>
+<body>
+{% include 'checkout_nav.html' %}
+
+
+<style media="screen">
+
+     .alert {
+       background: #f8d7da;
+       padding: 5px 10px;
+       border-radius: 8px;
+     }
+       .animation-ctn{
+           text-align:center;
+           margin: 5em auto;
+       }
+
+       @-webkit-keyframes checkmark {
+       0% {
+           stroke-dashoffset: 100px
+       }
+
+       100% {
+           stroke-dashoffset: 200px
+       }
+       }
+
+       @-ms-keyframes checkmark {
+       0% {
+           stroke-dashoffset: 100px
+       }
+
+       100% {
+           stroke-dashoffset: 200px
+       }
+       }
+
+       @keyframes checkmark {
+       0% {
+           stroke-dashoffset: 100px
+       }
+
+       100% {
+           stroke-dashoffset: 0px
+       }
+       }
+
+       @-webkit-keyframes checkmark-circle {
+       0% {
+           stroke-dashoffset: 480px
+
+       }
+
+       100% {
+           stroke-dashoffset: 960px;
+
+       }
+       }
+
+       @-ms-keyframes checkmark-circle {
+       0% {
+           stroke-dashoffset: 240px
+       }
+
+       100% {
+           stroke-dashoffset: 480px
+       }
+       }
+
+       @keyframes checkmark-circle {
+       0% {
+           stroke-dashoffset: 480px
+       }
+
+       100% {
+           stroke-dashoffset: 960px
+       }
+       }
+
+       @keyframes colored-circle {
+       0% {
+           opacity:0
+       }
+
+       100% {
+           opacity:100
+       }
+       }
+
+       /* other styles */
+       /* .svg svg {
+       display: none
+       }
+       */
+       .inlinesvg .svg svg {
+       display: inline
+       }
+
+       /* .svg img {
+       display: none
+       } */
+
+       .icon--order-success svg polyline {
+       -webkit-animation: checkmark 0.3s ease-in-out 0.9s backwards;
+       animation: checkmark 0.3s ease-in-out 0.9s backwards
+       }
+
+       .icon--order-success svg circle {
+       -webkit-animation: checkmark-circle 0.6s ease-in-out backwards;
+       animation: checkmark-circle 0.6s ease-in-out backwards;
+       }
+       .icon--order-success svg circle#colored {
+       -webkit-animation: colored-circle 0.6s ease-in-out 0.7s backwards;
+       animation: colored-circle 0.6s ease-in-out 0.7s backwards;
+       }
+   </style>
+{% if order_status == "false" %}
+<div class="animation-ctn">
+  	<div class="icon icon--order-success svg">
+          <svg xmlns="http://www.w3.org/2000/svg" width="154px" height="154px">
+            <g fill="none" stroke="#F44812" stroke-width="2">
+              <circle cx="77" cy="77" r="72" style="stroke-dasharray:480px, 480px; stroke-dashoffset: 960px;"></circle>
+              <circle id="colored" fill="#F44812" cx="77" cy="77" r="72" style="stroke-dasharray:480px, 480px; stroke-dashoffset: 960px;"></circle>
+              <polyline class="st0" stroke="#fff" stroke-width="10" points="43.5,77.8  112.2,77.8 " style="stroke-dasharray:100px, 100px; stroke-dashoffset: 200px;"/>
+            </g>
+          </svg>
+        </div>
+    <br />
+    <h2>OOPS! Unable to Place Order 😵.</h2>
+    <p>Sorry, your order failed 😢 Please try again or contact us 🙏 </p>
+</div>
+{% else %}
+<h4> Bad Request! </h4>
+{% endif %}
+{% include 'footer.html' %}
+ <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script></script>
+
+</body>
+
+</html>

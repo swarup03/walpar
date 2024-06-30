@@ -1,0 +1,179 @@
+{% if fileNames is defined and fileNames|length >= 2 %}
+{% set path1 = 'brand/' + brand_id|string + '/' + fileNames[0] %}
+{% set path2 = 'brand/' + brandId|string + '/' + fileNames[1] %}
+{% endif %}
+<style>
+  .box_img_cart{
+    height: 130px;
+    width: 110.44px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+  }
+</style>
+
+<tr id="productRow_{{ product_id }}">
+      <th scope="row">1</th>
+      <td>
+          <div class="card mb-3" style="max-width: 540px;">
+              <div class="row g-0">
+                  <div style="background-image: url({{ url_for('static', filename=path1) }});" class="img-fluid rounded-start box_img_cart col-md-4" alt="..."></div>
+                <div class="col-md-8">
+                  <div class="card-body">
+                      <a href="/products/{{brand_id}}/{{product_id}}"> <h5 class="card-title">{{name}}</h5></a>
+                      <p style="display: inline;"> MRP: <h5 id="price_{{ product_id }}" style="display: inline;" class="card-title">₹{{ price }}/ -</h5><del style="display: inline;">₹1000/ -</del></p>
+                  </div>
+                </div>
+              </div>
+          </div>
+      </td>
+        <td>
+            <div class="quantity-container my-4">
+                <button onclick="decreaseQuantity('{{ product_id }}','{{cart_id}}')" class="btn btn-primary">-</button>
+                <input type="text" id="quantityInput_{{ product_id }}" value="{{ quantity }}" data-quantity="{{ quantity }}" class="btn btn-outline-primary" readonly>
+
+                <button onclick="increaseQuantity('{{ product_id }}','{{cart_id}}')" class="btn btn-primary">+</button>
+            </div>
+            <button onclick="removeFromCart('{{ product_id }}', '{{ cart_id }}')" class="btn btn-outline-danger fa-solid fa-trash"></button>
+        </td>
+        <td>
+            <h4 id="totalPrice_{{ product_id }}" style="display: inline;" class="card-title total-price">₹{{ quantity * price }}/ -</h4>
+        </td>
+
+    </tr>
+
+<script>
+// Add this function to calculate and update subtotal on page load
+function updateSubtotalOnLoad() {
+    var newSubtotal = calculateSubtotal();
+    updateSubtotal(newSubtotal);
+}
+
+// Call the function when the page is loaded
+document.addEventListener("DOMContentLoaded", function () {
+    updateSubtotalOnLoad();
+});
+
+function increaseQuantity(productId,cartId) {
+    var quantityInput = document.getElementById("quantityInput_" + productId);
+    var currentQuantity = parseInt(quantityInput.value);
+    quantityInput.value = currentQuantity + 1;
+
+    updateTotalPrice(productId, currentQuantity + 1);
+    updateQuantityInDatabase(productId, currentQuantity + 1,cartId);
+}
+
+function decreaseQuantity(productId,cartId) {
+    var quantityInput = document.getElementById("quantityInput_" + productId);
+    var currentQuantity = parseInt(quantityInput.value);
+    if (currentQuantity > 1) {
+        quantityInput.value = currentQuantity - 1;
+        updateTotalPrice(productId, currentQuantity - 1);
+        updateQuantityInDatabase(productId, currentQuantity - 1,cartId);
+    }
+}
+function updateTotalPrice(productId, newQuantity) {
+    var quantityInput = document.getElementById("quantityInput_" + productId);
+    var priceElement = document.getElementById("price_" + productId);
+    var totalPriceElement = document.getElementById("totalPrice_" + productId);
+
+    if (priceElement && totalPriceElement) {
+        var price = parseFloat(priceElement.textContent.replace('₹', '').trim());
+        var totalPrice = price * newQuantity;
+
+        if (quantityInput) {
+            quantityInput.value = newQuantity;
+        }
+
+        totalPriceElement.textContent = '₹' + totalPrice.toFixed(2);
+        var newSubtotal = calculateSubtotal();
+        updateSubtotal(newSubtotal);
+
+    }
+}
+
+function calculateSubtotal() {
+    var subtotal = 0;
+    // Iterate over product rows and calculate subtotal
+    // Adjust this part based on your HTML structure
+    var productRows = document.querySelectorAll('.table tbody tr');
+    productRows.forEach(function (row) {
+        var productId = row.getAttribute('id').replace('productRow_', '');
+        var price = parseFloat(row.querySelector('.total-price').textContent.replace('₹', '').trim());
+        subtotal += price;
+    });
+    return subtotal;
+}
+
+function updateSubtotal(newSubtotal) {
+    var subtotalElement = document.getElementById('subtotal');
+    if (subtotalElement) {
+        subtotalElement.textContent = 'Subtotal: ₹' + newSubtotal.toFixed(2) + '/ -';
+    }
+}
+
+function updateQuantityInDatabase(productId, newQuantity,cartId) {
+    // Send an AJAX request to the server to update the quantity in the database
+
+    fetch('/update_cart_quantity', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            cartId: cartId,
+            quantity: newQuantity,
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+                console.log('Quantity updated in the database:', data);
+            } else if (data.message === 'Unable to update quantity') {
+                // Product is already in the cart, show a warning toast
+                console.log('Quantity updated in the database:', data);
+            }
+
+        // Optionally handle the response (e.g., show a success message)
+    })
+    .catch(error => {
+        console.error('Error updating quantity in the database:', error);
+    });
+}
+
+function removeFromCart(productId, cartId) {
+    // Send an AJAX request to the server to remove the product from the cart
+    fetch('/remove_from_cart', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            cartId: cartId,
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            // Remove the product row from the table
+            var productRow = document.getElementById('productRow_' + productId);
+            if (productRow) {
+                productRow.remove();
+
+                // Update the subtotal
+                var newSubtotal = calculateSubtotal();
+                updateSubtotal(newSubtotal);
+            }
+        } else {
+            // Handle the case where the removal was not successful
+            console.error('Error removing product from cart:', data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error removing product from cart:', error);
+    });
+}
+
+
+</script>
+

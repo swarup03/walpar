@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"  />
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.png') }}">
+
+    <title>Walpar Nutritions</title>
+</head>
+
+
+<body>
+{% include 'nav.html' %}
+<!--#Brand image-->
+{% set filename = category_details[0][1] +'_banner.jpeg' %}
+<div class="card text-bg-dark border border-white rounded-0">
+  <img src='{{ url_for("static", filename=filename) }}' class="card-img " alt="{{filename}}">
+  <div class="card-img-overlay">
+    <h3 class="card-title">{{category_details[0][1].upper()}}</h3>
+    <p class="card-text">{{category_details[0][2]}}</p>
+  </div>
+</div>
+
+
+<h1 class="text-center mt-5 mb-3">
+    Products:
+</h1>
+<div class="container">
+  {% if brand_product == [] %}
+    <div class="alert alert-warning" role="alert">
+      Product Not Found!
+    </div>
+    {% else %}
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for name, price, productId, brandId, fileNames in brand_product %}
+            {% include 'card.html' %}
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+
+<!--# About-->
+<h1 class="text-center mt-5 mb-3">
+    About {{category_details[0][1].title()}}
+</h1>
+<div class="container">
+    <div class="alert alert-secondary p-4 text-center fs-5" role="alert">
+        {{category_details[0][3]}}
+    </div>
+</div>
+
+<!--# FAQs-->
+<h1 class="text-center mt-2 mb-3">
+    FAQs
+</h1>
+<div class="container">
+    <div class="accordion" id="accordionPanelsStayOpenExample">
+  <div class="accordion-item">
+    <h2 class="accordion-header">
+      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+        Accordion Item #1
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
+      <div class="accordion-body">
+        <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!--#about us-->
+<h1 class="text-center mt-2 mb-3">
+    About Us
+</h1>
+<div class="container">
+<div class="card mb-3">
+  <img src="https://source.unsplash.com/2000x600/?drus" class="card-img-top" alt="...">
+  <div class="card-body">
+    <h5 class="card-title">Walpar Healthcare</h5>
+    <p class="card-text">Who we are as a company is the result of strategic choices that we have made. These in turn are based on our mission and core values, which defines what we believe in and how we go about our business.</p>
+  </div>
+</div>
+</div>
+{% include 'footer.html' %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script></script>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+</div>
+
+</body>
+
+</html>

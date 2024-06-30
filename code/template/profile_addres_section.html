@@ -1,0 +1,81 @@
+<style>
+    .edir-cart{
+        color: #3032f0;
+    }
+    .edir-cart:hover{
+        color: #12a044;
+     }
+</style>
+<div id="address_{{ address_id }}">
+    <p class="fs-6" id="street_address_{{ address_id }}">{{ street_address }}</p>
+    <p class="fs-6" id="location_{{ address_id }}">{{ city }},{{ state }},{{ zip_code }}.</p>
+    <div class="text-end">
+        <a style="cursor:pointer;" data-bs-toggle="modal" data-bs-target="#updateAddress_{{ address_id }}" class="fa-regular fa-pen-to-square edir-cart"></a>
+
+
+        {% if address_detail|count >= 2 %}
+            <a onclick="removeAddress('{{ address_id }}')" style="cursor:pointer;" class="text-danger fa-solid fa-trash"></a>
+        {% endif %}
+
+    </div>
+    <hr>
+</div>
+
+<div class="modal fade" id="updateAddress_{{ address_id }}" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">Update Address</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="row g-3" method="post" action="/edit_address/{{address_id}}">
+                      <div class="col-12">
+                        <label for="inputAddress" class="form-label">Address</label>
+                          <textarea class="form-control" name="updatedAddress" id="inputAddress">{{ street_address }}</textarea>
+                      </div>
+                      <div class="col-md-6">
+                        <label for="inputCity" class="form-label">City</label>
+                        <input type="text" class="form-control" name="updatedCity" id="inputCity" value="{{city}}">
+                      </div>
+                      <div class="col-md-4">
+                        <label for="inputState" class="form-label">State</label>
+                        <input type="text" class="form-control" name="updatedState" id="inputState" value="{{state}}">
+                      </div>
+                      <div class="col-md-2">
+                        <label for="inputZip" class="form-label">Zip</label>
+                        <input type="text" class="form-control" name="updatedZip" id="inputZip" value="{{ zip_code }}">
+                      </div>
+                      <div class="col-12">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                      </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+<script>
+function removeAddress(addressId) {
+        // AJAX request to remove address
+        fetch(`/remove_address/${addressId}`, {
+            method: 'POST',
+        })
+        .then(response => response.json())
+        .then(data => {
+        if (data.status === 'success') {
+            var addressRow = document.getElementById('address_'+addressId);
+            if (addressRow) {
+                addressRow.remove();
+            }
+        } else {
+            // Handle the case where the removal was not successful
+            console.error('Error removing product from cart:', data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error removing product from cart:', error);
+    });
+}
+
+
+</script>

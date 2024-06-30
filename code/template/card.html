@@ -1,0 +1,135 @@
+{% if fileNames is defined and fileNames|length >= 2 %}
+{% set path1 = 'brand/' + brandId|string + '/' + fileNames[0] %}
+{% set path2 = 'brand/' + brandId|string + '/' + fileNames[1] %}
+{% endif %}
+<style>
+  .box_img {
+    height: 420px;
+    width: 426.44px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+  }
+
+  .box_img:hover {
+    border-radius: 25px;
+    transition: background-image 0.5s, border-radius 0.5s;
+  }
+</style>
+<div class="col">
+    <a class="card inbox border-white" style="text-decoration: none; color: #000000" href="/products/{{brandId}}/{{productId}}">
+      <div class="z-3 card-img-top box_img" style="background-image: url({{ url_for('static', filename=path1) }});" onMouseOver="this.style.backgroundImage='url({{ url_for('static', filename=path2) }})'" onMouseOut="this.style.backgroundImage='url({{ url_for('static', filename=path1) }})'"></div>
+      <div class="card-body">
+        <h5 class="card-title py-2">{{name}}</h5>
+        <div>
+          <p style="display: inline;">MRP: <h4 style="display: inline;" class="card-title">₹{{price}}</h4><del style="display: inline;">₹1000/ -</del></p>
+          <p class="card-text">(inc of all taxes)</p>
+        </div>
+        <div class="my-2 d-grid gap-2">
+            <a class="z-4 btn btn-primary" onclick="addToCart({{productId}})" type="button">ADD TO CART</a>
+        </div>
+      </div>
+    </a>
+</div>
+
+<script>
+    // Your existing code here...
+
+    function addToCart(clickedProductId) {
+    // Check if user is authenticated
+    const isAuthenticated = {{ session.get('Walpar-Nutritions_email_session') and 'true' or 'false' }};
+
+    if (isAuthenticated) {
+        // Fetch the user's email from the session
+        const userEmail = '{{ session.get('Walpar-Nutritions_email_session') }}';
+        console.log('User Email:', userEmail);
+
+        // Gather product details
+        const quantity = 1;  // You can adjust this based on your UI
+
+        // Send request to server
+        fetch('/add_to_cart', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                productId: clickedProductId,
+                quantity: quantity,
+                User_Email: userEmail,
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Handle the response
+            if (data.status === 'success') {
+                // Product successfully added to cart, show a success toast
+                showSuccessToast('Product added to cart successfully!');
+            } else if (data.error === 'product already in the cart') {
+                // Product is already in the cart, show a warning toast
+                showWarningToast('Product is already in the cart.');
+            }
+        })
+        .catch(error => {
+            console.error('Error adding to cart:', error);
+            // Show an error toast
+            showErrorToast('An error occurred while adding the product to the cart.');
+        });
+    } else {
+        // Redirect to the login page
+        window.location.href = '/profile/login';
+    }
+}
+ // Function to show a success toast
+    function showSuccessToast(message) {
+        showToast('bg-success', message);
+    }
+
+    // Function to show a warning toast
+    function showWarningToast(message) {
+        showToast('bg-warning', message);
+    }
+
+    // Function to show an error toast
+    function showErrorToast(message) {
+        showToast('bg-danger', message);
+    }
+
+    // Generic function to show a toast
+    function showToast(bgClass, message) {
+        const toastContainer = document.querySelector('.toast-container');
+        const liveToast = document.getElementById('liveToast');
+
+        // Create a new toast element
+        const newToast = document.createElement('div');
+        newToast.className = `toast ${bgClass}`;
+        newToast.setAttribute('role', 'alert');
+        newToast.setAttribute('aria-live', 'assertive');
+        newToast.setAttribute('aria-atomic', 'true');
+
+        // Set the toast content
+        newToast.innerHTML = `
+            <div class="toast-header">
+                <strong class="me-auto">Status!</strong>
+                <small>Just now</small>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                ${message}
+            </div>
+        `;
+
+        // Add the new toast to the container
+        toastContainer.appendChild(newToast);
+
+        // Show the toast
+        const bootstrapToast = new bootstrap.Toast(newToast);
+        bootstrapToast.show();
+
+        // Remove the toast after it's hidden
+        newToast.addEventListener('hidden.bs.toast', function () {
+            toastContainer.removeChild(newToast);
+        });
+    }
+
+</script>

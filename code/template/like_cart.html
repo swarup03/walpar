@@ -1,0 +1,65 @@
+{% if fileNames is defined and fileNames|length >= 2 %}
+{% set path1 = 'brand/' + brand_id|string + '/' + fileNames[0] %}
+{% set path2 = 'brand/' + brand_id|string + '/' + fileNames[1] %}
+{% endif %}
+<style>
+  .box_img {
+    height: 420px;
+    width: 426.44px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+  }
+
+  .box_img:hover {
+    border-radius: 25px;
+    transition: background-image 0.5s, border-radius 0.5s;
+  }
+</style>
+<div class="col" id="productRow_{{ product_id }}">
+    <a class="card inbox border-white" style="text-decoration: none; color: #000000;" href="/products/{{brand_id}}/{{product_id}}">
+      <div class="z-3 card-img-top box_img" style="background-image: url({{ url_for('static', filename=path1) }});" onMouseOver="this.style.backgroundImage='url({{ url_for('static', filename=path2) }})'" onMouseOut="this.style.backgroundImage='url({{ url_for('static', filename=path1) }})'"></div>
+      <div class="card-body">
+        <h5 class="card-title py-2">{{name}}</h5>
+        <div>
+          <p style="display: inline;">MRP: <h4 style="display: inline;" class="card-title">₹{{price}}</h4>  <del style="display: inline;" class="py-3">₹1000/ -</del></p>
+          <p class="card-text">{{description}}</p>
+        </div>
+          <div class="text-end">
+              {% if active=="like_active" %}
+                <a onclick="removeFromLike('{{ product_id }}', '{{ like_id }}')" style="cursor:pointer;" class="text-danger fa-solid fa-trash"></a>
+              {% endif%}
+          </div>
+      </div>
+    </a>
+</div>
+<script>
+    function removeFromLike(productId, likeId) {
+    // Send an AJAX request to the server to remove the product from the cart
+    fetch('/remove_from_like', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            likeId: likeId,
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            var productRow = document.getElementById('productRow_' + productId);
+            if (productRow) {
+                productRow.remove();
+            }
+        } else {
+            // Handle the case where the removal was not successful
+            console.error('Error removing product from cart:', data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error removing product from cart:', error);
+    });
+}
+
+</script>
